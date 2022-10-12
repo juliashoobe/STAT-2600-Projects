@@ -1,0 +1,295 @@
+---
+title: "Final"
+author: "Julia Shoobe"
+date: "12/05/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Installing Packages
+```{r}
+#install.packages("tidyverse") #execute once before commenting out
+library(tidyverse)
+```
+#Download Dataset
+```{r}
+data <- read.csv("/cloud/project/FINALDATAfinal.csv") #make sure the pathway is correct from where the data was saved, otherwise it will give an error
+```
+#Convert Data Types
+```{r}
+#Convert to Numeric
+as.numeric(data$MOOD.RANKING)
+as.numeric(data$HEARTRATE)
+as.numeric(data$Age)
+as.numeric(data$TOBACCO.ALCOHOL)
+as.numeric(data$CHOLESTEROL)
+as.numeric(data$TSH)
+as.numeric(data$VITAMIN.B12)
+as.numeric(data$VITAMIN.D)
+
+#Convert to Character
+as.character(data$DIAGNOSIS)
+```
+#Participants per Diagnosis
+```{r}
+count(data$DIAGNOSIS)
+```
+
+#Subsets
+```{r}
+#**ANXIETY SUBSETS**
+anxietydata <- filter(data, DIAGNOSIS == "Generalized Anxiety Disorder")
+normalcholesterolanxiety <- filter(anxietydata, CHOLESTEROL <= 200)
+highcholesterolanxiety <- filter(anxietydata, CHOLESTEROL > 200)
+anxietynormaltsh <- filter(anxietydata, TSH >= 0.4 & TSH <= 4.0)
+anxietytshhyper <- filter(anxietydata, TSH < 0.4)
+anxietytshhypo <- filter(anxietydata, TSH > 4.0)
+anxietyb12low <- filter(anxietydata, VITAMIN.B12 < 200)
+anxietyb12normal <- filter(anxietydata, VITAMIN.B12 > 200)
+anxietydlow <- filter(anxietydata, VITAMIN.D < 30)
+anxietydnormal <- filter(anxietydata, VITAMIN.D > 30)
+
+#**DEPRESSION SUBSETS**
+depressiondata <- filter(data, DIAGNOSIS == "Major Depression")
+normalcholesteroldepression <- filter(depressiondata, CHOLESTEROL >= 125)
+lowcholesteroldepression <- filter(depressiondata, CHOLESTEROL < 125)
+depressiontshhypo <- filter(depressiondata, TSH < 0.4)
+depressiontshnormal <- filter(depressiondata, TSH >= 0.4 & TSH <= 4.0)
+depressionb12low <- filter(depressiondata, VITAMIN.B12 < 200)
+depressionb12normal <- filter(depressiondata, VITAMIN.B12 >= 200)
+depressiondlow <- filter(depressiondata, VITAMIN.D < 30)
+depressiondnormal <- filter(depressiondata, VITAMIN.D >= 30)
+
+#**BIPOLAR SUBSETS**
+bipolardata <- filter(data, DIAGNOSIS == "Bipolar Disorder")
+normalcholesterolbipolar <- filter(bipolardata, CHOLESTEROL >= 125)
+lowcholesterolbipolar <- filter(bipolardata, CHOLESTEROL < 125)
+bipolartshhypo <- filter(bipolardata, TSH < 0.4)
+bipolartshnormal <- filter(bipolardata, TSH >= 0.4 & TSH <= 4.0)
+bipolartshhyper <- filter(bipolardata, TSH > 4.0)
+bipolarb12low <- filter(bipolardata, VITAMIN.B12 < 200)
+bipolarb12normal <- filter(bipolardata, VITAMIN.B12 >- 200)
+bipolardlow <- filter(bipolardata, VITAMIN.D < 30)
+bipolardnormal <- filter(bipolardata, VITAMIN.D >= 30)
+
+#**BORDERLINE PERSONALITY DISORDER SUBSETS**
+bpddata <- filter(data, DIAGNOSIS == "Borderline Personality Disoder")
+normalcholesterolbpd <- filter(bpddata, CHOLESTEROL >= 125)
+lowcholesterolbpd <- filter(bpddata, CHOLESTEROL < 125)
+bpdb12low <- filter(bpddata, VITAMIN.B12 < 200)
+bpdb12normal <- filter(bpddata, VITAMIN.B12 >- 200)
+bpddlow <- filter(bpddata, VITAMIN.D < 30)
+bpddnormal <- filter(bpddata, VITAMIN.D >= 30)
+```
+
+#Means
+```{r}
+#**ANXIETY DATA**
+mean(anxietydata$HEARTRATE)
+#91.73
+mean(anxietydata$TOBACCO.ALCOHOL)
+#5.77
+mean(anxietydata$CHOLESTEROL)
+#209.73
+mean(anxietydata$TSH)
+#1.43
+mean(anxietydata$VITAMIN.B12)
+#284.96
+mean(anxietydata$VITAMIN.D)
+#33.62
+
+#**DEPRESSION DATA**
+mean(depressiondata$HEARTRATE)
+#74.36
+mean(depressiondata$TOBACCO.ALCOHOL)
+#5.16
+mean(depressiondata$CHOLESTEROL)
+#129.04
+mean(depressiondata$TSH)
+#4.36
+mean(depressiondata$VITAMIN.B12)
+#281.36
+mean(depressiondata$VITAMIN.D)
+#34.36
+
+#**BIPOLAR DATA**
+mean(bipolardata$HEARTRATE)
+#75.77
+mean(bipolardata$TOBACCO.ALCOHOL)
+#6.29
+mean(bipolardata$CHOLESTEROL)
+#129.04
+mean(bipolardata$TSH)
+#3.96
+mean(bipolardata$VITAMIN.B12)
+#306.29
+mean(bipolardata$VITAMIN.D)
+#29.42
+
+#**BPD DATA**
+mean(bpddata$HEARTRATE)
+#80.67
+mean(bpddata$TOBACCO.ALCOHOL)
+#5.61
+mean(bpddata$CHOLESTEROL)
+#127.06
+mean(bpddata$TSH)
+#2.16
+mean(bpddata$VITAMIN.B12)
+#367.17
+mean(bpddata$VITAMIN.D)
+#40.67
+```
+
+#Bar Chart Counting Number of Individuals with each Diagnosis
+```{r}
+bardiagnosis <- ggplot(data = data) +
+  geom_bar(mapping = aes(x = DIAGNOSIS, fill = DIAGNOSIS))+
+  ggtitle("Figure 1: Diagnosis Count") +
+  theme(legend.position = "none") +
+  ylab("Count") +
+  xlab("Diagnosis")
+bardiagnosis
+```
+#How Heart Rate Correlates
+```{r}
+agehr <- ggplot(data = data)+
+  geom_point(mapping = aes(x = AGE, y = HEARTRATE)) +
+  ggtitle("Is Age Connected with Heart Rate?") +
+  ylab("Heart Rate")+
+  xlab("Age")
+agehr
+cor(data$AGE, data$HEARTRATE) 
+#-.044 
+#Almost no correlation - 0 means no correlation
+
+cholesterolhr <- ggplot(data = data, mapping = aes(x = HEARTRATE, y = CHOLESTEROL))+
+  geom_point(mapping = aes(color = DIAGNOSIS)) +
+  geom_smooth()+
+  ggtitle("Figure 2: Is Cholesterol Connected with Heart Rate?")+
+  ylab("Cholesterol Level")+
+  xlab("Heart Rate") 
+cholesterolhr
+cor(data$HEARTRATE, data$CHOLESTEROL)
+#0.54
+#weak positive correlation
+
+tshhr <- ggplot(data = data, mapping = aes(x = HEARTRATE, y = TSH))+
+  geom_point(mapping = aes(color = DIAGNOSIS)) +
+  geom_smooth()+
+  ggtitle("Figure 3: Is TSH Connected with Heart Rate?")+
+  ylab("TSH Level")+
+  xlab("Heart Rate")
+tshhr
+cor(data$HEARTRATE, data$TSH)
+#-0.54
+#weak negative correlation
+
+b12hr <- ggplot(data = data)+
+  geom_point(mapping = aes(x = HEARTRATE, y = VITAMIN.B12, color = DIAGNOSIS)) +
+  ggtitle("Is Vitamin B12 Connected with Heart Rate?")+
+  ylab("Vitamin B12 Level")+
+  xlab("Heart Rate") 
+b12hr
+cor(data$HEARTRATE, data$VITAMIN.B12)
+#0.12
+#no correlation
+
+dhr <- ggplot(data = data)+
+  geom_point(mapping = aes(x = HEARTRATE, y = VITAMIN.D, color = DIAGNOSIS)) +
+  ggtitle("Is Vitamin D Connected with Heart Rate?")+
+  ylab("Vitamin D Level")+
+  xlab("Heart Rate") 
+dhr
+  
+cor(data$HEARTRATE, data$VITAMIN.D)
+#0.15
+#no correlation
+```
+#Heart Rate and Diagnoses
+```{r}
+diagnosishr <- ggplot(data = data, mapping = aes(x = DIAGNOSIS, y = HEARTRATE))+
+  geom_boxplot()
+diagnosishr
+```
+#Boxplots of Bloodmarkers
+```{r}
+#**CHOLESTEROL**
+cholesterolbox <- ggplot(data = data, mapping = aes(x = DIAGNOSIS, y = CHOLESTEROL, fill = DIAGNOSIS)) +
+  geom_boxplot()+
+  theme(legend.position="none") +
+  scale_fill_brewer(palette="BuPu")+
+  ggtitle("Figure 4: Cholesterol Boxplots")+
+  xlab("Diagnosis")+
+  ylab("Cholesterol Levels")
+cholesterolbox
+
+summary(anxietydata$CHOLESTEROL)
+#Min: 149; 1Q: 192.5; Median: 212.5; Mean: 209.7; 3Q: 234.5; Max: 248
+summary(bipolardata$CHOLESTEROL)
+#Min: 100; 1Q: 114; Median: 121; Mean: 126.9; 3Q: 131; Max: 172
+summary(bpddata$CHOLESTEROL)
+#Min: 75; 1Q: 112.5; Median: 128; Mean: 127.1; 3Q: 141.5; Max: 185
+summary(depressiondata$CHOLESTEROL)
+#Min: 101; 1Q: 114; Median: 122; Mean: 129 3Q: 134; Max: 188
+
+tshbox <- ggplot(data = data, mapping = aes(x = DIAGNOSIS, y = TSH, fill = DIAGNOSIS)) +
+  geom_boxplot()+
+  theme(legend.position="none")+
+  scale_fill_brewer(palette="BuPu")+
+  ggtitle("Figure 5: TSH Boxplots")+
+  xlab("Diagnosis")+
+  ylab("TSH Levels")
+tshbox
+
+summary(anxietydata$TSH)
+#Min: 0.3; 1Q: 0.4; Median: 1.2; Mean: 1.435; 3Q: 2.325; Max: 3.7 
+summary(bipolardata$TSH)
+#Min: 0.2; 1Q: 3.150; Median: 4.4; Mean: 3.958; 3Q: 5.1; Max: 6.3 
+summary(bpddata$TSH)
+#Min: 0.7; 1Q: 1.4; Median: 2.15; Mean: 2.161; 3Q: 2.775; Max: 3.9
+summary(depressiondata$TSH)
+#Min: 0.4; 1Q: 4.3; Median: 4.8; Mean: 4.36; 3Q: 5.5; Max: 6.1
+
+
+b12box <- ggplot(data = data, mapping = aes(x = DIAGNOSIS, y = VITAMIN.B12, fill = DIAGNOSIS)) +
+  geom_boxplot()+
+  theme(legend.position="none")+
+  scale_fill_brewer(palette="BuPu")+
+  ggtitle("Figure 6: Vitamin B12 Boxplots")+
+  xlab("Diagnosis")+
+  ylab("Vitamin B12 Levels")
+b12box
+
+summary(anxietydata$VITAMIN.B12)
+#Min: 102; 1Q: 144.5; Median: 170; Mean: 285; 3Q: 293.2; Max: 866 
+summary(bipolardata$VITAMIN.B12)
+#Min: 108; 1Q: 142; Median: 216; Mean: 306.3; 3Q: 418; Max: 871 
+summary(bpddata$VITAMIN.B12)
+#Min: 114; 1Q: 206.2; Median: 240; Mean: 367.2; 3Q: 468; Max: 896
+summary(depressiondata$VITAMIN.B12)
+#Min: 158; 1Q: 198; Median: 232; Mean: 281.4; 3Q: 246; Max: 863
+
+
+dbox <- ggplot(data = data, mapping = aes(x = DIAGNOSIS, y = VITAMIN.D, fill = DIAGNOSIS)) +
+  geom_boxplot()+
+  theme(legend.position="none")+
+  scale_fill_brewer(palette="BuPu")+
+  ggtitle("Figure 7: Vitamin D Boxplots")+
+  xlab("Diagnosis")+
+  ylab("Vitamin D Levels")
+dbox
+
+summary(anxietydata$VITAMIN.D)
+#Min: 11; 1Q: 18; Median: 23; Mean: 33.62; 3Q: 34.5; Max: 100
+summary(bipolardata$VITAMIN.D)
+#Min: 10; 1Q: 17.5; Median: 25; Mean: 29.42; 3Q: 29; Max: 87  
+summary(bpddata$VITAMIN.D)
+#Min: 11; 1Q: 17.25; Median: 26; Mean: 40.67; 3Q: 49.5; Max: 99
+summary(depressiondata$VITAMIN.D)
+#Min: 16; 1Q: 23; Median: 26; Mean: 34.36; 3Q: 34; Max: 100
+```
