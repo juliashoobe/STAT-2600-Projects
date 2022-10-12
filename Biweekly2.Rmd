@@ -1,0 +1,56 @@
+---
+title: "Biweekly Report 2"
+author: "Julia Shoobe"
+date: "9/15/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Install Packages (Once)
+```{r}
+install.packages('tidyverse')
+install.packages('magrittr')
+```
+#Run Packages (Every Time)
+```{r}
+library(tidyverse)
+library(magrittr)
+```
+#Download Dataset
+```{r}
+gmo_countries <- read.csv("~/Desktop/gmo_countries.csv")
+View(gmo_countries)
+```
+#Changing Column Header Names
+```{r}
+names(gmo_countries)[2]<-paste("Year2015")
+names(gmo_countries)[3]<-paste("Year2016")
+names(gmo_countries)[4]<-paste("Year2017")
+names(gmo_countries)[5]<-paste("Year2018")
+names(gmo_countries)[6]<-paste("Year2019")
+names(gmo_countries)[7]<-paste("biggest_crop")
+```
+
+#Subset for yearly crop percentage per country
+```{r}
+
+gmo_years <-gmo_countries %>%
+  select(Country,c(2:6))
+#or gmo_years <- select(gmo_countries, c(2:6))
+```
+#Subset for biggest crop per country
+```{r}
+gmo_crops <- gmo_countries %>%
+  select(Country, biggest_crop)
+```
+#Long Subset
+```{r}
+gmo_long <- gather(gmo_years, Year, Percent, c(2:6))
+```
+#Subset adding column for the average crop percentage per country
+```{r}
+gmo_average <- mutate(gmo_years, avg_crop = (Year2015 + Year2016 + Year2017 + Year2018 + Year2019 )/5)
+```
+
