@@ -1,8 +1,17 @@
 ---
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  chunk_output_type: console
+---
+ ---
 title: "Final Project"
 author: "Julia Shoobe"
 date: "11/14/2020"
 output: html_document
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, include=FALSE}
@@ -10,7 +19,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 #Install Dataset
 ```{r}
-data <- read.csv("~/Documents/College/Year 2/Data Science/FINAL PROJECT DATA.csv")
+data <- read.csv("/cloud/project/FINAL PROJECT DATA 2.csv")
 ```
 
 #Install and Load Packages
@@ -137,4 +146,137 @@ moodyadhd <- filter(adhddata, Overall.Feeling == "moody/irritable")
 relaxedadhd <- filter(adhddata, Overall.Feeling == "relaxed/content")
 stressedadhd <- filter(adhddata, Overall.Feeling == "stressed/restless/anxious")
 ```
+
+#Bar Chart Showing Number of Subjects Feeling a Certain Way Given Diagnosis
+```{r}
+feeling <- ggplot(data = data)+
+  geom_bar(mapping = aes(x = Diagnosis, fill = Overall.Feeling)) +
+  ggtitle("Figure 1: Overall Feeling") +
+  ylab("Number of Subjects") +
+  labs(fill = "Overall Feeling Description")+
+  theme(text = element_text(size = 10))           
+feeling
+```
+
+#Vitamin B12
+```{r}
+#**Means of Disorders and B12**
+mean(anxietydata$B12.Level)
+#408.17
+mean(adhddata$B12.Level)
+#720.44
+mean(depressiondata$B12.Level)
+#452.66
+mean(bipolardata$B12.Level)
+#402.83
+mean(data$B12.Level)
+#496.74
+
+#**Medians of Disorders and B12**
+median(anxietydata$B12.Level)
+#347
+median(adhddata$B12.Level)
+#677
+median(depressiondata$B12.Level)
+#369.5
+median(bipolardata$B12.Level)
+#306
+median(data$B12.Level)
+#393.5
+
+#Boxplot of B12 Level Based on Diagnosis
+b12box<-ggplot(data = data, mapping = aes(x = Diagnosis, y = B12.Level)) +
+  geom_boxplot() +
+  ggtitle("Figure 2: B12 Level Based on Diagnosis") +
+  ylab("B12 Level") +
+  theme(text = element_text(size = 10))           
+b12box
+
+#Does Age Affect B12?
+ageb12 <- ggplot(data = data, mapping = aes(x = Age, y = B12.Level)) + 
+  geom_point() + 
+  geom_smooth() +
+  facet_wrap(~Diagnosis)
+ageb12
+
+#Does Heart Rate Affect B12?
+hrb12 <- ggplot(data = data, mapping = aes(x=Heart.Rate, y = B12.Level)) +
+  geom_point()+
+  geom_smooth()+
+  facet_wrap(~Diagnosis)
+hrb12
+```
+
+#Tobacco and B12
+```{r}
+#Mean Data per Diagnosis
+mean(anxietydata$Alcohol.Tobacco.Hard.Drug.Usage..1.10.)
+#6.32
+mean(depressiondata$Alcohol.Tobacco.Hard.Drug.Usage..1.10.)
+#5.96
+mean(bipolardata$Alcohol.Tobacco.Hard.Drug.Usage..1.10.)
+#6.86
+mean(adhddata$Alcohol.Tobacco.Hard.Drug.Usage..1.10.)
+#5.52
+
+b12tobaccodiagnosis <- ggplot(data, aes(x=Alcohol.Tobacco.Hard.Drug.Usage..1.10., y=B12.Level, fill = Diagnosis)) + 
+  stat_summary(geom ='bar', fun = mean, position=position_dodge(.5))+
+  ylab("B12 Level")+
+  xlab("Addictive Substance Usage (1-10)")+
+  ggtitle("Figure 3: B12 Levels and Substance Usage
+          - per Diagnosis")
+b12tobaccodiagnosis 
+```
+
+
+#Vitamin D
+```{r}
+#**Means of Vitamin D Per Diagnosis**
+mean(anxietydata$Vitamin.D.Level)
+#44.67
+mean(adhddata$Vitamin.D.Level)
+#57.80
+mean(depressiondata$Vitamin.D.Level)
+#41.31
+mean(bipolardata$Vitamin.D.Level)
+#30.41
+mean(data$Vitamin.D.Level)
+#
+
+#**Medians of Vitamin D Per Diagnosis**
+median(anxietydata$Vitamin.D.Level)
+#35
+median(adhddata$Vitamin.D.Level)
+#57
+median(depressiondata$Vitamin.D.Level)
+#35.5
+median(bipolardata$Vitamin.D.Level)
+#36
+median(data$Vitamin.D.Level)
+#39
+
+#Boxplot of Vitamin D Level Based on Diagnosis
+dbox<-ggplot(data = data, mapping = aes(x = Diagnosis, y = Vitamin.D.Level)) +
+  geom_boxplot() +
+  ggtitle("Figure 4: Vitamin D Level Based on Diagnosis") +
+  ylab("Vitamin D Level") +
+  theme(text = element_text(size = 10))           
+dbox
+
+#Does Age Affect Vitamin D?
+aged <- ggplot(data = data, mapping = aes(x = Age, y = Vitamin.D.Level)) + 
+  geom_point() + 
+  geom_smooth() +
+  facet_wrap(~Diagnosis)
+aged
+
+#Does Heart Rate Affect Vitamin D?
+hrd <- ggplot(data = data, mapping = aes(x=Heart.Rate, y = Vitamin.D.Level)) +
+  geom_point()+
+  geom_smooth()+
+  facet_wrap(~Diagnosis)+
+hrd
+```
+
+
 
