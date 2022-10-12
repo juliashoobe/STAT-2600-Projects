@@ -1,0 +1,124 @@
+---
+title: "Biweekly Report 3"
+author: "Julia Shoobe"
+date: "9/29/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Read in Dataset
+```{r}
+whreport <- read.csv("~/Desktop/2019.csv")
+```
+#Libraries
+```{r}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+```{r}
+ls(whreport)
+#Country.or.region: Name of the country
+#GDP.per.capita: extent to which GDP contributed to calculation
+#Healthy.life.expectancy:  extent to which life expectancy contributed to calculation
+#Perceptions.of.corruption: extent to which perception of corruction contributed to calculation
+#Social.suport
+#Freedom.to.make.life.choices: extent to which freedom contributed to calculation
+#Generosity
+#Overall.rank: Rank of the country based on the Happiness Score
+#Score: A metric measred by asking the sampled poeple the question: "How would you rate your happiness on a scale 1-10
+```
+#Descriptive Statistics
+```{r}
+summary(whreport$Score)
+#Min: 2.853, Median: 5.380, Mean: 5.407, Max: 7.769
+summary(whreport$GDP.per.capita)
+#Min: 0.000, Median: 0.960, Mean: 0.905, Max: 1.684
+summary(whreport$Healthy.life.expectancy)
+#Min: 0.000, Median: 0.789, Mean: 0.7252, Max: 1.141
+summary(whreport$Freedom.to.make.life.choices)
+#Min: 0.000, Median: 0.417, Mean: 0.393, Max: 0.613
+summary(whreport$Generosity)
+#Min: 0.000, Median: 0.178, Mean: 0.185, Max: 0.566
+```
+#Data Visualization - Regular Graphs
+```{r}
+#Country and Score
+country_score <- ggplot(data = whreport) +
+  geom_point(mapping = aes(x = Country.or.region, y = Score)) +
+  ggsave("country_score.png")
+country_score 
+#Score and GDP
+gdp_score <- ggplot(data = whreport) +
+  geom_point(mapping = aes(x = GDP.per.capita, y = Score))+
+  ggsave("gdp_score.png")
+gdp_score
+#Score and Social Support
+social_score <- ggplot(data = whreport) +
+  geom_point(mapping = aes(x = Social.support, y = Score))+
+  ggsave("social_score.png")
+social_score
+#Score and Healthy Life Expectancy
+life_score <- ggplot(data = whreport) +
+  geom_point(mapping = aes(x = Healthy.life.expectancy, y = Score))+
+  ggsave("life_score.png")
+life_score
+#Score and Freedom
+freedom_score <- ggplot(data = whreport) +
+  geom_point(mapping = aes(x = Freedom.to.make.life.choices, y = Score)) +
+  ggsave("freedom_score.png")
+freedom_score
+#Score and Generosity
+generosity_score <- ggplot(data = whreport) +
+  geom_point(mapping = aes(x = Generosity, y = Score))
+generosity_score +
+  ggsave("generosity_score.png")
+#Score and Corruption
+corruption_score <- ggplot(data = whreport) +
+  geom_point(mapping = aes(x = Perceptions.of.corruption, y = Score)) +
+  ggsave("corruption_score.png")
+corruption_score
+```
+#Data Visualization - Exploring Classes
+```{r}
+#Geom Aesthetics
+gdp_score_generosity_randomcolor <- ggplot(data = whreport, aes(x = GDP.per.capita, y = Score))  + 
+  geom_point(aes(color=Generosity)) +
+  ggsave("gdp_score_generosity_randomcolor.png")
+gdp_score_generosity_randomcolor
+gdp_score_corruption_alpha <- ggplot(data = whreport, aes(x = GDP.per.capita, y = Score)) +
+    geom_point(aes(alpha = Perceptions.of.corruption))+
+  ggsave("gdp_score_corruption_alpha.png")
+gdp_score_corruption_alpha
+gdp_score_support_fill <- ggplot(data = whreport, aes(x = GDP.per.capita, y = Score)) +
+  geom_point(aes(fill = Social.support)) +
+  ggsave("gdp_score_support_fill.png")
+gdp_score_support_fill
+gdp_score_expectancy_group <- ggplot(data = whreport, aes(x = GDP.per.capita, y = Score)) +
+  geom_point(aes(group = Healthy.life.expectancy)) +
+  ggsave("gdp_score_expectancy_group.png")
+gdp_score_expectancy_group
+gdp_score_expectancy_size <-ggplot(data = whreport, aes(x = GDP.per.capita, y = Score)) +
+  geom_point(aes(size = Healthy.life.expectancy)) +
+  ggsave("gdp_score_expectancy_size.png")
+gdp_score_expectancy_size
+```
+#Manual Aesthetics
+```{r}
+gdp_score_color_manual <- ggplot(data = whreport, aes(x = GDP.per.capita, y = Score)) +
+  geom_point(aes(color = 'plum'))+
+  ggsave("gdp_score_color_manual.png")
+gdp_score_color_manual  
+```
+
+#Adding Labels
+```{r}
+gdp_score_labels <- ggplot(data = whreport, aes(x = GDP.per.capita, y = Score)) +
+  geom_point(aes(color = Generosity)) +
+  labs(title = "GDP Relating to Hapiness Score", subtitle = "with Generosity Variable", x = "GDP Per Capita", y = "Happiness Score")+
+  ggsave("gdp_score_labels.png")
+gdp_score_labels
+```
+
