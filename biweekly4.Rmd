@@ -1,0 +1,64 @@
+---
+title: "biweekly4"
+author: "Julia Shoobe"
+date: "10/16/2020"
+output:
+  pdf_document: default
+  html_document: default
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Load Dataset
+```{r}
+socialmedia_scores <- read.csv("~/Desktop/socialmedia_scores.csv")
+socialmedia_flipped <- read.csv("~/Desktop/socialmedia_flipped.csv")
+```
+#Install Packages (Once)
+```{r}
+install.packages("tidyverse")
+install.packages("dplyr")
+```
+#Load Packages(Every Time)
+```{r}
+library(tidyverse)
+library(dplyr)
+```
+#Creating Subsets
+```{r}
+#YRBSS: Youth Risk Behavior Surveillance Survey 9th-12th Graders
+YRBSS <- select(socialmedia_flipped, YEAR, contains("YRBSS"))
+#MtF: Monitoring the Future 8th and 10th Graders
+MtF <- select(socialmedia_flipped,YEAR, contains("MtF"))
+years <- select(socialmedia_scores, c(1:9))
+suicide_rates <- select(socialmedia_flipped, YEAR, contains("Suicide.Rates"))
+#Subset with only the Suicide Rates
+suicide_rates <- (suicide_rates, Male = Suicide.Rates.per.100.000.MALE, Female = Suicide.Rates.per.100.000.FEMALE)
+#Suicide Dataset subset with only the years
+suicide_rates2 <- subset(suicide_rates, YEAR!="N" & YEAR!="d 2009 to 2015" & YEAR!="d 2011/2012 to 2015" & YEAR!="Correlation With Depressive Symptoms or Suicide-Related Outcomes 2009-2015")
+#Long Dataset for Suicide Dataset to then create graph
+suicide.l <- gather(suicide_rates2, Sex, Suicide_Rates, c(2:3))
+#Similarly, creating a dataset for MtF with only the years
+mtf_revised <- subset(MtF, YEAR!="N" & YEAR!="d 2009 to 2015" & YEAR!="d 2011/2012 to 2015" & YEAR!="Correlation With Depressive Symptoms or Suicide-Related Outcomes 2009-2015")
+#The MtF long data
+mtf.l <- gather(mtf_revised, Questionaire, Measurement, c(2:9))
+#YRBSS just years dataset
+yrbss_revised <- subset(YRBSS, YEAR!="N" & YEAR!="d 2009 to 2015" & YEAR!="d 2011/2012 to 2015" & YEAR!="Correlation With Depressive Symptoms or Suicide-Related Outcomes 2009-2015")
+#YRBSS long data
+yrbss.l <- gather(yrbss_revised, Questionaire, Measurement, c(2:4))
+```
+#Visuals
+```{r}
+suicide <- ggplot(data = suicide.l) +
+  geom_point(mapping = aes(x = YEAR,y = Suicide_Rates)) +
+  facet_wrap(~Sex)
+suicide
+mtf_graph <- ggplot(data = mtf.l, mapping = aes(x=YEAR, y = Measurement, color = Questionaire))+
+  geom_point() +
+  theme(legend.position = "bottom")
+mtf_graph
+```
+
