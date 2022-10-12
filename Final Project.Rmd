@@ -1,0 +1,140 @@
+---
+title: "Final Project"
+author: "Julia Shoobe"
+date: "11/14/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#Install Dataset
+```{r}
+data <- read.csv("~/Documents/College/Year 2/Data Science/FINAL PROJECT DATA.csv")
+```
+
+#Install and Load Packages
+```{r}
+#install.packages("tidyverse") #install once, then comment out
+library(tidyverse)
+```
+
+#Convert Data Types
+```{r}
+#Convert to Numeric
+as.numeric(data$Mood.Ranking..1.10.)
+as.numeric(data$Heart.Rate)
+as.numeric(data$Age)
+as.numeric(data$Alcohol.Tobacco.Hard.Drug.Usage..1.10.)
+as.numeric(data$B12.Level)
+as.numeric(data$Vitamin.D.Level)
+
+#Convert to Character
+as.character(data$Overall.Feeling)
+as.character(data$Diagnosis)
+as.character(data$Overall.Health)
+as.character(data$Other.Medical.Conditions)
+
+#Convert to Logical
+as.logical(data$Suicidal.Thoughts.Attempts...Yes.No)
+```
+
+# Diagnosis Subsets
+```{r}
+anxietydata <- filter(data, Diagnosis == "Generalized Anxiety Disorder")
+depressiondata <- filter(data, Diagnosis == "Major Depression")
+bipolardata <- filter(data, Diagnosis == "Bipolar Disorder")
+adhddata <- filter(data, Diagnosis == "Attention Deficit Hyperactivity Disorder (ADHD)")
+```
+
+#Suicide Subsets
+```{r}
+yessuicide <- filter(data, Suicidal.Thoughts.Attempts...Yes.No == "Yes")
+nosuicide <- filter(data, Suicidal.Thoughts.Attempts...Yes.No == "No")
+anxietyyes <- filter(anxietydata, Suicidal.Thoughts.Attempts...Yes.No == "Yes")
+anxietyno <- filter(anxietydata, Suicidal.Thoughts.Attempts...Yes.No == "No")
+depressionyes <- filter(depressiondata, Suicidal.Thoughts.Attempts...Yes.No == "Yes")
+depressionno <- filter(depressiondata, Suicidal.Thoughts.Attempts...Yes.No == "No")
+bipolaryes <- filter(bipolardata, Suicidal.Thoughts.Attempts...Yes.No == "Yes")
+bipolarno <- filter(bipolardata, Suicidal.Thoughts.Attempts...Yes.No == "No")
+adhdyes <- filter(adhddata, Suicidal.Thoughts.Attempts...Yes.No == "Yes")
+adhdno <- filter(adhddata, Suicidal.Thoughts.Attempts...Yes.No == "No")
+```
+
+#Mood Subsets
+```{r}
+goodmooddata <- filter(data, Mood.Ranking..1.10. > 5)
+badmooddata <- filter(data, Mood.Ranking..1.10. <= 5)
+goodanxiety <- filter(anxietydata, Mood.Ranking..1.10. > 5)
+badanxiety <- filter(anxietydata, Mood.Ranking..1.10. <= 5)
+gooddepression <- filter(depressiondata, Mood.Ranking..1.10. > 5)
+baddepression <- filter(depressiondata, Mood.Ranking..1.10. <= 5)
+goodbipolar <- filter(bipolardata, Mood.Ranking..1.10. > 5)
+badbipolar <- filter(bipolardata, Mood.Ranking..1.10. <= 5)
+goodadhd <- filter(adhddata, Mood.Ranking..1.10. > 5)
+badadhd <- filter(adhddata, Mood.Ranking..1.10. <=5)
+yesgood <- filter(yessuicide, Mood.Ranking..1.10. > 5)
+yesbad <- filter(yessuicide, Mood.Ranking..1.10. <= 5)
+nogood <- filter(nosuicide, Mood.Ranking..1.10. > 5)
+nobad <- filter(nosuicide, Mood.Ranking..1.10. <= 5)
+```
+
+#Age Subsets
+```{r}
+youngdata <- filter(data, Age < 50)
+olddata <- filter(data, Age >= 50)
+```
+
+#Tobacco Subsets
+```{r}
+tobaccohigh <- filter(data, Alcohol.Tobacco.Hard.Drug.Usage..1.10. > 5)
+tobaccolow <- filter(data, Alcohol.Tobacco.Hard.Drug.Usage..1.10. <= 5)
+```
+
+#Vitamin B12 Subsets
+```{r}
+lowB12 <- filter(data, B12.Level < 250)
+normalB12 <- filter(data, B12.Level >= 250 && B12.Level <= 1230)
+highB12 <- filter(data, B12.Level > 1230)
+```
+
+#Vitamin D Subsets
+```{r}
+lowD <- filter(data, Vitamin.D.Level < 40)
+normalD <- filter(data, Vitamin.D.Level >= 40 && Vitamin.D.Level <= 90)
+highD <- filter(data, Vitamin.D.Level > 90)
+```
+
+#Overall Feeling Subsets
+```{r}
+happy <- filter(data, Overall.Feeling == "happy/joyful/euphoric")
+sad <- filter(data, Overall.Feeling == "sad/depressed/hopeless")
+moody <- filter(data, Overall.Feeling == "moody/irritable")
+relaxed <- filter(data, Overall.Feeling == "relaxed/content")
+stressed <- filter(data, Overall.Feeling == "stressed/restless/anxious")
+
+happyanxiety <- filter(anxietydata, Overall.Feeling == "happy/joyful/euphoric")
+sadanxiety <- filter(anxietydata, Overall.Feeling == "sad/depressed/hopeless")
+moodyanxiety <- filter(anxietydata, Overall.Feeling == "moody/irritable")
+relaxedanxiety <- filter(anxietydata, Overall.Feeling == "relaxed/content")
+stressedanxiety <- filter(anxietydata, Overall.Feeling == "stressed/restless/anxious")
+
+happydepressed <- filter(depressiondata, Overall.Feeling == "happy/joyful/euphoric")
+saddepressed <- filter(depressiondata, Overall.Feeling == "sad/depressed/hopeless")
+moodydepressed <- filter(depressiondata, Overall.Feeling == "moody/irritable")
+relaxeddepressed <- filter(depressiondata, Overall.Feeling == "relaxed/content")
+stresseddepressed <- filter(depressiondata, Overall.Feeling == "stressed/restless/anxious")
+
+happybipolar <- filter(bipolardata, Overall.Feeling == "happy/joyful/euphoric")
+sadbipolar <- filter(bipolardata, Overall.Feeling == "sad/depressed/hopeless")
+moodybipolar <- filter(bipolardata, Overall.Feeling == "moody/irritable")
+relaxedbipolar <- filter(bipolardata, Overall.Feeling == "relaxed/content")
+stressedbipolar <- filter(bipolardata, Overall.Feeling == "stressed/restless/anxious")
+
+happyadhd <- filter(adhddata, Overall.Feeling == "happy/joyful/euphoric")
+sadadhd <- filter(adhddata, Overall.Feeling == "sad/depressed/hopeless")
+moodyadhd <- filter(adhddata, Overall.Feeling == "moody/irritable")
+relaxedadhd <- filter(adhddata, Overall.Feeling == "relaxed/content")
+stressedadhd <- filter(adhddata, Overall.Feeling == "stressed/restless/anxious")
+```
+
